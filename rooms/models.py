@@ -18,6 +18,26 @@ class AbstractItem(core_models.TimeStampedModel):
 
 
 class RoomType(AbstractItem):
+    """RoomType Model Definition"""
+
+    pass
+
+
+class Amenity(AbstractItem):
+    """Amenity Model Definition"""
+
+    pass
+
+
+class Facility(AbstractItem):
+    """Facility Model Definition"""
+
+    pass
+
+
+class HouseRule(AbstractItem):
+    """HouseRule Model Definition"""
+
     pass
 
 
@@ -39,7 +59,12 @@ class Room(core_models.TimeStampedModel):
     host = models.ForeignKey(user_models.User, on_delete=models.CASCADE)
     # foreignkey : 한 model을 다른 model과 연결해주는 function.
     # many to one 관계
-    room_type = models.ManyToManyField(RoomType, blank=True)
+    room_type = models.ForeignKey(RoomType, on_delete=models.SET_NULL, null=True)
+    amenities = models.ManyToManyField(
+        Amenity,
+    )
+    facilities = models.ManyToManyField(Facility)
+    house_rules = models.ManyToManyField(HouseRule)
 
     def __str__(self):
         return self.name

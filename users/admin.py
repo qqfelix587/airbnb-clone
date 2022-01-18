@@ -24,3 +24,4 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
     # list_filter = UserAdmin.list_filter + ("gender",)
+    # list_display = UserAdmin.list_display + ("gender",)

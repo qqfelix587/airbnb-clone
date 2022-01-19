@@ -63,6 +63,7 @@ class Room(core_models.TimeStampedModel):
     name = models.CharField(max_length=140)
     description = models.TextField()
     country = CountryField()
+    # 1 추후 국내 city만 사용하도록 변경
     city = models.CharField(max_length=80)
     price = models.IntegerField()
     address = models.CharField(max_length=140)

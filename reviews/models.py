@@ -9,6 +9,7 @@ class Review(core_models.TimeStampedModel):
     accuracy = models.IntegerField()
     communication = models.IntegerField()
     cleanliness = models.IntegerField()
+    location = models.IntegerField()
     check_in = models.IntegerField()
     value = models.IntegerField()
     user = models.ForeignKey(
@@ -21,3 +22,17 @@ class Review(core_models.TimeStampedModel):
     def __str__(self):
         return f"{self.review} - {self.room}"
         # return self.room.name
+
+    def rating_average(self):
+        # front end 와 admin에서 모두 사용할 것이라면 model에 정의해서 사용
+        avg = (
+            self.accuracy
+            + self.communication
+            + self.cleanliness
+            + self.location
+            + self.check_in
+            + self.value
+        ) / 6
+        return round(avg, 2)
+
+    rating_average.short_description = "AVG."

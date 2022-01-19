@@ -1,4 +1,7 @@
 from django.db import models
+from django.utils import timezone
+
+# 외국에서 이용시 Asia/seoul 시간에 맞춰 시간을 재계산해줌.
 from core import models as core_models
 
 
@@ -29,3 +32,19 @@ class Reservation(core_models.TimeStampedModel):
 
     def __str__(self):
         return f"{self.room} - {self.check_in}"
+
+    def in_progress(self):
+        now = timezone.now().date()
+        return now >= self.check_in and now <= self.check_out
+
+    in_progress.boolean = True
+
+    def is_finished(self):
+        now = timezone.now().date()
+        return now > self.check_out
+
+    is_finished.boolean = True
+    # 해당 부분 추후에는 시간단위로 변경해서 사용하면 됨.
+
+    def get_now_date():
+        return timezone.now().date()

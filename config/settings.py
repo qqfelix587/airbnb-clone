@@ -47,7 +47,7 @@ PROJECT_APPS = [
     "lists.apps.ListsConfig",
     "conversations.apps.ConversationsConfig",
 ]
-THIRD_PARTY_APPS = ["django-countries"]
+THIRD_PARTY_APPS = ["django-countries", "django_seed"]
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS
 
 MIDDLEWARE = [

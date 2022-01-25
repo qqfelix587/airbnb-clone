@@ -17,7 +17,7 @@ class ProgressListFilter(admin.SimpleListFilter):
 
         if self.value() == "True":
             return queryset.filter(check_in__lte=now, check_out__gte=now)
-        else:
+        elif self.value() == "False":
             return queryset.exclude(check_in__lte=now, check_out__gte=now)
 
 
@@ -33,7 +33,7 @@ class FinishedListFilter(admin.SimpleListFilter):
 
         if self.value() == "True":
             return queryset.filter(check_out__lt=now)
-        else:
+        elif self.value() == "False":
             return queryset.exclude(check_out__lt=now)
 
 

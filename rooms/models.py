@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django_countries.fields import CountryField
 from core import models as core_models
 
@@ -96,6 +97,10 @@ class Room(core_models.TimeStampedModel):
     # admin 에서만 save method 를 사용하고 싶은 경우 save_model을 사용
     # https://docs.djangoproject.com/en/4.0/ref/contrib/admin/
 
+    def get_absolute_url(self):
+        return reverse("rooms:detail", kwargs={"pk": self.pk})
+
+    # 어떤 url 을 갖고 있던지 간에 그 url로 이동시켜주는 것
     def total_rating(self):
         all_reviews = self.reviews.all()
         all_ratings = 0

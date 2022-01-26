@@ -1,4 +1,7 @@
 from django.views.generic import ListView
+from django.http import Http404
+
+# from django.urls import reverse
 from django.shortcuts import render
 from . import models
 
@@ -13,13 +16,13 @@ class HomeView(ListView):
     # page_kwarg = "papa"
     context_object_name = "rooms"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        return context
-
 
 def room_detail(request, pk):
-    room = models.Room.objects.get(pk=pk)
-    print(room)
-    return render(request, "rooms/detail.html")
+    try:
+        room = models.Room.objects.get(pk=pk)
+        return render(request, "rooms/detail.html", {"room": room})
+
+    except models.Room.DoesNotExist:
+        # return redirect(reverse("core:home"))
+        raise Http404()
+        # templates 폴더 내 404.html을 찾아서 보여줌.

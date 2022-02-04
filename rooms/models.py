@@ -98,9 +98,9 @@ class Room(core_models.TimeStampedModel):
     # https://docs.djangoproject.com/en/4.0/ref/contrib/admin/
 
     def get_absolute_url(self):
+        # 어떤 url 을 갖고 있던지 간에 그 url로 이동시켜주는 것
         return reverse("rooms:detail", kwargs={"pk": self.pk})
 
-    # 어떤 url 을 갖고 있던지 간에 그 url로 이동시켜주는 것
     def total_rating(self):
         all_reviews = self.reviews.all()
         all_ratings = 0

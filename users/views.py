@@ -37,6 +37,7 @@ class SignUpView(FormView):
     }
 
     def form_valid(self, form):
+
         form.save()
         email = form.cleaned_data.get("email")
         password = form.cleaned_data.get("password")

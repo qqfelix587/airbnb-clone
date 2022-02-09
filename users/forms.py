@@ -11,8 +11,10 @@ class LoginForm(forms.Form):
         email = self.cleaned_data.get("email")
         password = self.cleaned_data.get("password")
         try:
-            user = models.User.objects.get(email=email)
+            user = models.User.objects.get(username=email)
             if user.check_password(password):
+
+                # check_password는 hashed한 password의 값 확인
                 return self.cleaned_data
             else:
                 self.add_error("password", forms.ValidationError("Password is wrong"))
@@ -25,9 +27,12 @@ class SignUpForm(forms.ModelForm):
     class Meta:
         model = models.User
         fields = ("first_name", "last_name", "email", "birthdate")
+        # models form은 기본적으로 추가된 field에 대해 clean 과정을 진행하나,
+        # 아래 password_confirm 이나 이미 존재하는 사용자를 찾는 과정 등 customizing이 필요한 경우에는 clean_<field_name> method를 사용
+        # 따라서 signupform에서는 일반적으로 잘 사용하지 않음.
 
     password = forms.CharField(widget=forms.PasswordInput)
-    # User는 암호화된 password를 갖고 있으므로 field에 넣지 않음.
+    # User model은 암호화된 password를 갖고 있으므로 이는 field에 넣지 않음.
     password1 = forms.CharField(widget=forms.PasswordInput, label="Confirm Password")
 
     def clean_email(self):
@@ -38,10 +43,10 @@ class SignUpForm(forms.ModelForm):
         except models.User.DoesNotExist:
             return email
 
-    def clean_password1(self):
+    def clean_password(self):
 
         password = self.cleaned_data.get("password")
-        password1 = self.cleaned_data.get("password")
+        password1 = self.cleaned_data.get("password1")
 
         if password != password1:
             raise forms.ValidationError("Password confirmation does not match")

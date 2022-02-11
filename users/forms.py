@@ -1,4 +1,7 @@
 from django import forms
+
+# from django.contrib.auth.forms import UserCreationForm
+# ; 'auth.User' has been swapped for 'users.User 오류로 해결 안됨
 from . import models
 
 
@@ -43,7 +46,7 @@ class SignUpForm(forms.ModelForm):
         except models.User.DoesNotExist:
             return email
 
-    def clean_password(self):
+    def clean_password1(self):
 
         password = self.cleaned_data.get("password")
         password1 = self.cleaned_data.get("password1")

@@ -1,7 +1,6 @@
 import os
 import requests
-from django.views import View
-from django.views.generic import FormView
+from django.views.generic import FormView, DetailView
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login, logout
@@ -204,3 +203,16 @@ def kakao_callback(request):
     except KakaoException as e:
         messages.error(request, e)
         return redirect(reverse("users:login"))
+
+
+class UserProfileView(DetailView):
+    model = models.User
+    context_object_name = "user_obj"
+    # 이를 설정하지 않을 시 detailveiw는 페이지에 따라 user_obj를 변경하는 문제가 발생 -> 다른 사람의 프로필 접근 가능해짐
+    # I think that was a problem which "Django Login" and "DetailView of User" are using same context_object_name "user". So, they could overwrite each other, but Nico changed context_object_name of "DetailView of User" from default "user" to "user_obj" and that solved the problem
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['field_name'] = field_value
+    #     return context
+    # 위와 같은 방식으로 view에서 특정 값이나 변수를 전달가능

@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
+from django.shortcuts import reverse
 from django.template.loader import render_to_string
 
 # Create your models here.
@@ -63,6 +64,11 @@ class User(AbstractUser):
     login_method = models.CharField(
         max_length=50, choices=LOGIN_CHOICES, default=LOGIN_EMAIL
     )
+
+    def get_absolute_url(self):
+        # get_absolute_url을 사용하지 않아도 url의 인자값을 넘겨 사용할 수 있으나,
+        # 이 함수를 사용할 시 관리자 페이지에서 "view on site" 버튼을 통해 해당되는 실제화면을 볼 수 있다.
+        return reverse("users:profile", kwargs={"pk": self.pk})
 
     def verify_email(self):
         # verify의 경우 곳곳에서 사용될 수 있으므로 model에 정의

@@ -8,22 +8,33 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.base import ContentFile
 from django.contrib import messages
-from . import forms, models
+from django.contrib.messages.views import SuccessMessageMixin
+from . import forms, models, mixins
 
 
-class LoginView(FormView):
+class LoginView(mixins.LoggedOutOnlyView, FormView):
     template_name = "users/login.html"
     form_class = forms.LoginForm
     success_url = reverse_lazy("core:home")
+    # 이것대신에 next query에 담긴 정보를 바탕으로 본래 접근하고자 했던 곳으로 가게 할 수 있음(get_success_url이용)
 
     def form_valid(self, form):
         email = form.cleaned_data.get("email")
         password = form.cleaned_data.get("password")
         user = authenticate(self.request, username=email, password=password)
+
         if user is not None:
             login(self.request, user)
             return redirect(reverse("core:home"))
         return super().form_valid(form)
+
+    # def get_success_url(self):
+    #     next_arg = self.request.GET.get("next")
+    #     if next_arg is not None:
+    #         return next_arg
+    #     else:
+    #         return reverse("core:home")
+    # 작동안함 이유찾기 -> accessmixin에 get_success_url func없음
 
 
 def log_out(request):
@@ -220,7 +231,7 @@ class UserProfileView(DetailView):
     # 위와 같은 방식으로 view에서 특정 값이나 변수를 전달가능
 
 
-class UpdateProfileView(UpdateView):
+class UpdateProfileView(mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateView):
     model = models.User
     template_name = "users/update-profile.html"
     fields = (
@@ -233,17 +244,18 @@ class UpdateProfileView(UpdateView):
         "language",
         "currency",
     )
+    success_message = "Profile Updated"
 
     def get_object(self, queryset=None):
         return self.request.user
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class=form_class)
-        form.fields["birthdate"].widget.attrs = {"placeholder": "생일"}
-        form.fields["first_name"].widget.attrs = {"placeholder": "이름"}
-        form.fields["last_name"].widget.attrs = {"placeholder": "성"}
-        form.fields["gender"].empty_label = None
-        return form
+    # def get_form(self, form_class=None):
+    #     form = super().get_form(form_class=form_class)
+    #     form.fields["birthdate"].widget.attrs = {"placeholder": "생일"}
+    #     form.fields["first_name"].widget.attrs = {"placeholder": "이름"}
+    #     form.fields["last_name"].widget.attrs = {"placeholder": "성"}
+    #     form.fields["gender"].empty_label = None
+    #     return form
 
     # def form_valid(self, form):
     #     email = form.cleaned_data.get("email")
@@ -253,12 +265,21 @@ class UpdateProfileView(UpdateView):
     #  useremail 과 name 변경시 사용
 
 
-class UpdatePasswordView(PasswordChangeView):
+class UpdatePasswordView(
+    mixins.EmailLoginOnlyView,
+    mixins.LoggedInOnlyView,
+    SuccessMessageMixin,
+    PasswordChangeView,
+):
     template_name = "users/update-password.html"
+    success_message = "Password Updated"
+    # def get_form(self, form_class=None):
+    #     form = super().get_form(form_class=form_class)
+    #     form.fields["old_password"].widget.attrs = {"placeholder": "기존 비밀번호"}
+    #     form.fields["new_password1"].widget.attrs = {"placeholder": "새 비밀번호"}
+    #     form.fields["new_password2"].widget.attrs = {"placeholder": "새 비밀번호 확인"}
+    #     return form
+    #     placeholder를 원하면 해당 방법 이용
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class=form_class)
-        form.fields["old_password"].widget.attrs = {"placeholder": "기존 비밀번호"}
-        form.fields["new_password1"].widget.attrs = {"placeholder": "새 비밀번호"}
-        form.fields["new_password2"].widget.attrs = {"placeholder": "새 비밀번호 확인"}
-        return form
+    def get_success_url(self):
+        return self.request.user.get_absolute_url()

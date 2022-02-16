@@ -1,6 +1,7 @@
 from gc import get_objects
 import os
 import requests
+from django.contrib.auth.views import PasswordChangeView
 from django.views.generic import FormView, DetailView, UpdateView
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, reverse
@@ -222,16 +223,42 @@ class UserProfileView(DetailView):
 class UpdateProfileView(UpdateView):
     model = models.User
     template_name = "users/update-profile.html"
-    fields = {
+    fields = (
+        # "email",
         "first_name",
         "last_name",
-        "avatar",
         "gender",
         "bio",
         "birthdate",
         "language",
         "currency",
-    }
+    )
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields["birthdate"].widget.attrs = {"placeholder": "생일"}
+        form.fields["first_name"].widget.attrs = {"placeholder": "이름"}
+        form.fields["last_name"].widget.attrs = {"placeholder": "성"}
+        form.fields["gender"].empty_label = None
+        return form
+
+    # def form_valid(self, form):
+    #     email = form.cleaned_data.get("email")
+    #     self.object.username = email
+    #     self.object.save()
+    #     return super().form_valid(form)
+    #  useremail 과 name 변경시 사용
+
+
+class UpdatePasswordView(PasswordChangeView):
+    template_name = "users/update-password.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields["old_password"].widget.attrs = {"placeholder": "기존 비밀번호"}
+        form.fields["new_password1"].widget.attrs = {"placeholder": "새 비밀번호"}
+        form.fields["new_password2"].widget.attrs = {"placeholder": "새 비밀번호 확인"}
+        return form

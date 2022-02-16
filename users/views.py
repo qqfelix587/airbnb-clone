@@ -1,6 +1,7 @@
+from gc import get_objects
 import os
 import requests
-from django.views.generic import FormView, DetailView
+from django.views.generic import FormView, DetailView, UpdateView
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login, logout
@@ -216,3 +217,21 @@ class UserProfileView(DetailView):
     #     context['field_name'] = field_value
     #     return context
     # 위와 같은 방식으로 view에서 특정 값이나 변수를 전달가능
+
+
+class UpdateProfileView(UpdateView):
+    model = models.User
+    template_name = "users/update-profile.html"
+    fields = {
+        "first_name",
+        "last_name",
+        "avatar",
+        "gender",
+        "bio",
+        "birthdate",
+        "language",
+        "currency",
+    }
+
+    def get_object(self, queryset=None):
+        return self.request.user

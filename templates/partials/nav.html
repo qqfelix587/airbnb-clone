@@ -3,6 +3,17 @@
     {% if user.is_authenticated %}
     
     <!-- <li class="nav_link"><a href="{% url "users:profile" user.pk %}">Profile</a></li> -->
+    <li class="nav_link">
+        <a href="{% url 'users:switch-hosting' %}">
+        
+        {% if request.session.is_hosting %}
+            Start hosting
+        {% else %}
+            Stop hosting
+        {% endif %}
+            
+        </a>
+    </li>
     <li class="nav_link"><a href="{{user.get_absolute_url}}">Profile</a></li>
     <li class="nav_link"><a href="{% url 'users:logout' %}">Log out</a></li>
     {% else %}

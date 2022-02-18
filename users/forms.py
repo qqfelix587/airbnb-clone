@@ -68,10 +68,9 @@ class SignUpForm(forms.ModelForm):
             return password
 
     def save(self, *args, **kwargs):
-
+        user = super().save(commit=False)
         email = self.cleaned_data.get("email")
         password = self.cleaned_data.get("password")
-        user = super().save(commit=False)
         # commit=False :  create but don't save to the DB
         user.username = email
         user.set_password(password)

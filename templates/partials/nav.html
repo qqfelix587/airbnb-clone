@@ -7,9 +7,9 @@
         <a href="{% url 'users:switch-hosting' %}">
         
         {% if request.session.is_hosting %}
-            Start hosting
-        {% else %}
             Stop hosting
+        {% else %}
+            Start hosting
         {% endif %}
             
         </a>

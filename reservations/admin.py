@@ -1,3 +1,4 @@
+from csv import list_dialects
 from django.contrib import admin
 from . import models
 
@@ -52,3 +53,10 @@ class ReservationAdmin(admin.ModelAdmin):
     )
 
     list_filter = ("status", ProgressListFilter, FinishedListFilter)
+
+
+@admin.register(models.BookedDay)
+class BookedDayAdmin(admin.ModelAdmin):
+    """BookedDay Admin Definition"""
+
+    list_display = ("day", "reservation")

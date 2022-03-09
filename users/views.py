@@ -114,7 +114,7 @@ def github_callback(request):
                     name = profile_json.get("name")
                     email = profile_json.get("email")
                     bio = profile_json.get("bio")
-                    print(name, email, bio)
+                    # print(name, email, bio)
                     if name is None:
                         name = username
                     if email is None:

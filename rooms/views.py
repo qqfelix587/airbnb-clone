@@ -172,7 +172,6 @@ class RoomPhotosView(user_mixins.LoggedInOnlyView, DetailView):
 @login_required
 def delete_photo(request, room_pk, photo_pk):
     user = request.user
-
     try:
         room = models.Room.objects.get(pk=room_pk)
         if room.host.pk != user.pk:

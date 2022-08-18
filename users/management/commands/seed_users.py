@@ -13,6 +13,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--number",
             default=1,
+
             type=int,
             help="How many users do you want to create?",
         )
@@ -22,5 +23,4 @@ class Command(BaseCommand):
         seeder = Seed.seeder()
         seeder.add_entity(User, number, {"is_staff": False, "is_superuser": False, "avatar": lambda x: f"avatars/{random.randint(1,30)}.jpg"})
         seeder.execute()
-        
         self.stdout.write(self.style.SUCCESS(f"{number} users created!"))

@@ -28,6 +28,7 @@ class Command(BaseCommand):
             number,
             {
                 # https://faker.readthedocs.io/en/master/providers/baseprovider.html
+
                 "name": lambda x: seeder.faker.address(),
                 "host": lambda x: random.choice(all_users),
                 "room_type": lambda x: random.choice(room_types),
@@ -38,10 +39,10 @@ class Command(BaseCommand):
                 "baths": lambda x: random.randint(0, 5),
             },
         )
-
         # add photos and the others.
         created_photos = seeder.execute()
         # flatten을 쓰는 이유는 단순히 seeder.execute()의 값이 [[pk number]] 와 같은 형태이기에 이를 [pk number]의 형태로 바꾸기 위함
+
         created_clean = flatten(list(created_photos.values()))
         amenities = room_models.Amenity.objects.all()
         facilities = room_models.Facility.objects.all()

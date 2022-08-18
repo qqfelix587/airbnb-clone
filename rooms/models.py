@@ -81,8 +81,11 @@ class Room(core_models.TimeStampedModel):
         "users.User", related_name="rooms", on_delete=models.CASCADE
     )
     # foreignkey : 한 model을 다른 model과 연결해주는 function.
+
     # many to one 관계 (many room -> one user)
     # https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.ForeignKey.on_delete
+
+    # many to one 관계
     room_type = models.ForeignKey(
         "RoomType", related_name="rooms", on_delete=models.SET_NULL, null=True
     )
@@ -93,8 +96,10 @@ class Room(core_models.TimeStampedModel):
     def __str__(self):
         return self.name
 
+
     # django save override also delete
     # https://docs.djangoproject.com/en/4.1/topics/db/models/#overriding-model-methods
+
 
     def save(self, *args, **kwargs):
         self.city = str.capitalize(self.city)
@@ -106,6 +111,9 @@ class Room(core_models.TimeStampedModel):
     # def save_model(self, request, obj, form, change):
     #   print(obj, change, form)
     #   super().save_model(request, obj, form, change)
+    # admin 에서만 save method 를 사용하고 싶은 경우 save_model을 사용
+    # https://docs.djangoproject.com/en/4.0/ref/contrib/admin/
+
 
     def get_absolute_url(self):
         # 어떤 url 을 갖고 있던지 간에 그 url로 이동시켜주는 것

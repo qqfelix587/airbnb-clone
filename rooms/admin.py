@@ -17,14 +17,13 @@ class ItemAdmin(admin.ModelAdmin):
 
 class PhotoInline(admin.TabularInline):
     # foreign key 덕에 다른 model을 control할 수 있음.
+
     model = models.Photo
 
 
 @admin.register(models.Room)
 class RoomAdmin(admin.ModelAdmin):
     """Room Admin Definition"""
-
-
     # https://docs.djangoproject.com/en/4.1/ref/contrib/admin/
 
     inlines = (PhotoInline,)
